@@ -36,6 +36,7 @@
 *.vcxproj
 *.vcxproj.filters
 *.vcxproj.user
-.htm
+*.htm
 Debug
 x64
+.vs
