@@ -32,6 +32,9 @@ int main()
     cout << "\n";
     Node<int>* node = tree.getNode_DFS(12);
     cout << "node: " << node->data << "\n";
+    int nodeData = tree.getData_DFS(12);
+    if (nodeData == 0) cout << "couldn't find it!\n";
+    cout << "node's data: " << nodeData << endl;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

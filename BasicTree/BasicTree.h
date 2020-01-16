@@ -37,6 +37,8 @@ public:
 	/* deletions */
 
 	/* getters */
+	T getData_DFS(T data);
+	int getData_BFS(T data);
 	Node<T>* getNode_DFS(T data);
 	Node<T> getNode_BFS(T data);
 
@@ -95,6 +97,42 @@ void BasicTree<T>::insert(T data) {
 		parent->leftChild = getNewNode(data);
 	else    // put new node as right child
 		parent->rightChild = getNewNode(data);
+}
+
+template <typename T>
+T BasicTree<T>::getData_DFS(T data) {
+	Node<T>* currentNode = this->root;
+	stack<Node<T>*> nodeStack;
+
+	/* case of an empty tree */
+	if (this->root == NULL) { return NULL; }
+
+	/* case of just the root*/
+	if (this->root->leftChild == NULL && this->root->rightChild == NULL) { return this->root->data; }
+
+	/* keep traveling left until we reach a null node, then pop from the stack and travel right (if possible) then travel left, repeat */
+	while (!nodeStack.empty() || currentNode != NULL) {
+		if (currentNode != NULL) {
+			if (currentNode->data == data) {
+				return currentNode->data;
+			}
+			nodeStack.push(currentNode);
+			currentNode = currentNode->leftChild;	// travel left
+		}
+		else {	// means we reached a null node
+			currentNode = nodeStack.top();	// get the node at the top of the stack, which is the leftmost node at the moment
+			nodeStack.pop();
+
+			currentNode = currentNode->rightChild;	// travel right
+		}
+	}
+
+	return NULL;
+}
+
+template <typename T>
+int BasicTree<T>::getData_BFS(T data) {
+
 }
 
 template <typename T>
