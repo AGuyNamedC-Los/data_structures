@@ -35,22 +35,22 @@ public:
 	void insert(T data);
 
 	/* deletions */
+	bool deleteNode(T data);		// in progress
 
 	/* getters */
-	T getData_DFS(T data);
-	int getData_BFS(T data);
-	Node<T>* getNode_DFS(T data);
-	Node<T> getNode_BFS(T data);
+	T getNodeData(T data);
+	Node<T>* getNode(T data);
 
 	/* searches */
+	bool isNodePresent(T data);
 
 	/* printers */
 	void printDFS();
 	void printBFS();
-	void printNode_DFS(T data);
-	void printNode_BFS(T data);
+	void printNode(T data);
 };
 
+/* -----------------------------------------------------------------CONSTRUCTOR----------------------------------------------------------------- */
 template <typename T>
 BasicTree<T>::BasicTree() {
 	this->root = NULL;
@@ -69,6 +69,7 @@ Node<T>* BasicTree<T>::getNewNode(T data) {
 	return newNode;
 }
 
+/* -----------------------------------------------------------------INSERTIONS----------------------------------------------------------------- */
 template <typename T>
 void BasicTree<T>::insert(T data) {
 	if (this->root == NULL) {
@@ -99,31 +100,36 @@ void BasicTree<T>::insert(T data) {
 		parent->rightChild = getNewNode(data);
 }
 
+/* -----------------------------------------------------------------DELETIONS----------------------------------------------------------------- */
 template <typename T>
-T BasicTree<T>::getData_DFS(T data) {
+bool BasicTree<T>::deleteNode(T data) {
+	Node<T>* currentNode = *&this->root;
+	Node<T>* parent;
+	Node<T>* temptNode;
+
+	/* case of just the root */
+	if (currentNode->leftChild == NULL && currentNode->rightChild) {
+		delete this->root;
+		return true;
+	}
+
+	/* case of one child */
+
+	/* case of two children*/
+}
+
+/* -----------------------------------------------------------------GETTERS----------------------------------------------------------------- */
+template <typename T>
+T BasicTree<T>::getNodeData(T data) {
 	Node<T>* currentNode = this->root;
-	stack<Node<T>*> nodeStack;
 
-	/* case of an empty tree */
-	if (this->root == NULL) { return NULL; }
-
-	/* case of just the root*/
-	if (this->root->leftChild == NULL && this->root->rightChild == NULL) { return this->root->data; }
-
-	/* keep traveling left until we reach a null node, then pop from the stack and travel right (if possible) then travel left, repeat */
-	while (!nodeStack.empty() || currentNode != NULL) {
-		if (currentNode != NULL) {
-			if (currentNode->data == data) {
-				return currentNode->data;
-			}
-			nodeStack.push(currentNode);
-			currentNode = currentNode->leftChild;	// travel left
-		}
-		else {	// means we reached a null node
-			currentNode = nodeStack.top();	// get the node at the top of the stack, which is the leftmost node at the moment
-			nodeStack.pop();
-
-			currentNode = currentNode->rightChild;	// travel right
+	while (currentNode != NULL) {
+		if (data == currentNode->data) {
+			return currentNode->data;
+		} else if (data < currentNode->data) {	// travel down left branch
+			currentNode = currentNode->leftChild;
+		} else {	// travel down right branch
+			currentNode = currentNode->rightChild;
 		}
 	}
 
@@ -131,46 +137,43 @@ T BasicTree<T>::getData_DFS(T data) {
 }
 
 template <typename T>
-int BasicTree<T>::getData_BFS(T data) {
-
-}
-
-template <typename T>
-Node<T>* BasicTree<T>::getNode_DFS(T data) {
+Node<T>* BasicTree<T>::getNode(T data) {
 	Node<T>* currentNode = this->root;
 	stack<Node<T>*> nodeStack;
 
-	/* case of an empty tree */
-	if (this->root == NULL) { return NULL; }
-
-	/* case of just the root*/
-	if (this->root->leftChild == NULL && this->root->rightChild == NULL) { return this->root; }
-
-	/* keep traveling left until we reach a null node, then pop from the stack and travel right (if possible) then travel left, repeat */
-	while (!nodeStack.empty() || currentNode != NULL) {
-		if (currentNode != NULL) {
-			if (currentNode->data == data) {
-				return currentNode;
-			}
-			nodeStack.push(currentNode);
-			currentNode = currentNode->leftChild;	// travel left
+	while (currentNode != NULL) {
+		if (data == currentNode->data) {
+			return currentNode;
 		}
-		else {	// means we reached a null node
-			currentNode = nodeStack.top();	// get the node at the top of the stack, which is the leftmost node at the moment
-			nodeStack.pop();
-
-			currentNode = currentNode->rightChild;	// travel right
+		else if (data < currentNode->data) {	// travel down left branch
+			currentNode = currentNode->leftChild;
+		}
+		else {	// travel down right branch
+			currentNode = currentNode->rightChild;
 		}
 	}
-
 	return NULL;
 }
 
+/* -----------------------------------------------------------------SERACHES----------------------------------------------------------------- */
 template <typename T>
-Node<T> BasicTree<T>::getNode_BFS(T data) {
+bool BasicTree<T>::isNodePresent(T data) {
+	Node<T> currentNode = this->root;
 
+	while (currentNode != NULL) {
+		if (data == currentNode->data) {	
+			return true;
+		} else if (data < currentNode->data) {	// travel down left branch
+			currentNode = currentNode->leftChild;
+		} else {
+			currentNode = currentNode->rightChild;	// travel down right branch
+		}
+	}
+
+	return false;
 }
 
+/* -----------------------------------------------------------------PRINTERS----------------------------------------------------------------- */
 template <typename T>
 void BasicTree<T>::printDFS() {
 	Node<T>* currentNode = *&this->root;
@@ -190,7 +193,8 @@ void BasicTree<T>::printDFS() {
 		if (currentNode != NULL) {
 			nodeStack.push(currentNode);
 			currentNode = currentNode->leftChild;	// travel left
-		} else {	// means we reached a null node
+		}
+		else {	// means we reached a null node
 			currentNode = nodeStack.top();	// get the node at the top of the stack, which is the leftmost node at the moment
 			cout << currentNode->data << " ";
 			nodeStack.pop();
@@ -198,7 +202,6 @@ void BasicTree<T>::printDFS() {
 			currentNode = currentNode->rightChild;	// travel right
 		}
 	}
-
 	delete currentNode;
 }
 
@@ -228,14 +231,20 @@ void BasicTree<T>::printBFS() {
 }
 
 template <typename T>
-void BasicTree<T>::printNode_DFS(T data) {
-
+void BasicTree<T>::printNode(T data) {
+	Node<T> currentNode = this->root;
+	
+	while (currentNode != NULL) {
+		if (data == currentNode->data) {
+			cout << currentNode->data;
+			return;
+		} else if (data < currentNode->data) {	// travel down left branch
+			currentNode = currentNode->leftChild;
+		} else {
+			currentNode = currentNode->rightChild;	// travel down right branch
+		}
+	}
+	cout << "could not find node with data: " << data;
 }
-
-template <typename T>
-void BasicTree<T>::printNode_BFS(T data) {
-
-}
-
 
 #endif

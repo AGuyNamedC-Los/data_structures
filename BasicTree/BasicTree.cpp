@@ -30,9 +30,9 @@ int main()
     cout << "\n";
     tree.printBFS();
     cout << "\n";
-    Node<int>* node = tree.getNode_DFS(12);
+    Node<int>* node = tree.getNode(12);
     cout << "node: " << node->data << "\n";
-    int nodeData = tree.getData_DFS(12);
+    int nodeData = tree.getNodeData(12);
     if (nodeData == 0) cout << "couldn't find it!\n";
     cout << "node's data: " << nodeData << endl;
 }
