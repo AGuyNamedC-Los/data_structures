@@ -8,18 +8,30 @@ int main()
 {
     cout << "Hello World!\n";
     BasicTree<int> tree;
+    /*
+              10
+            /    \
+           6      12
+          / \     / \
+         5   7   11  13
+    */
+
+
     tree.insert(10);
     tree.insert(12);
-    tree.insert(14);
+    tree.insert(6);
+    tree.insert(7);
     tree.insert(5);
-    tree.insert(3);
-    tree.insert(3);
-    tree.insert(3);
-    tree.insert(3);
-    tree.insert(-6);
+    tree.insert(11);
+    tree.insert(13);
 
 
     tree.printDFS();
+    cout << "\n";
+    tree.printBFS();
+    cout << "\n";
+    Node<int>* node = tree.getNode_DFS(12);
+    cout << "node: " << node->data << "\n";
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

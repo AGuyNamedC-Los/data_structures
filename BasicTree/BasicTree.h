@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 #include <stack>
+#include <queue>
 
 using namespace std;
 
@@ -36,10 +37,16 @@ public:
 	/* deletions */
 
 	/* getters */
+	Node<T>* getNode_DFS(T data);
+	Node<T> getNode_BFS(T data);
+
+	/* searches */
 
 	/* printers */
 	void printDFS();
 	void printBFS();
+	void printNode_DFS(T data);
+	void printNode_BFS(T data);
 };
 
 template <typename T>
@@ -91,6 +98,42 @@ void BasicTree<T>::insert(T data) {
 }
 
 template <typename T>
+Node<T>* BasicTree<T>::getNode_DFS(T data) {
+	Node<T>* currentNode = this->root;
+	stack<Node<T>*> nodeStack;
+
+	/* case of an empty tree */
+	if (this->root == NULL) { return NULL; }
+
+	/* case of just the root*/
+	if (this->root->leftChild == NULL && this->root->rightChild == NULL) { return this->root; }
+
+	/* keep traveling left until we reach a null node, then pop from the stack and travel right (if possible) then travel left, repeat */
+	while (!nodeStack.empty() || currentNode != NULL) {
+		if (currentNode != NULL) {
+			if (currentNode->data == data) {
+				return currentNode;
+			}
+			nodeStack.push(currentNode);
+			currentNode = currentNode->leftChild;	// travel left
+		}
+		else {	// means we reached a null node
+			currentNode = nodeStack.top();	// get the node at the top of the stack, which is the leftmost node at the moment
+			nodeStack.pop();
+
+			currentNode = currentNode->rightChild;	// travel right
+		}
+	}
+
+	return NULL;
+}
+
+template <typename T>
+Node<T> BasicTree<T>::getNode_BFS(T data) {
+
+}
+
+template <typename T>
 void BasicTree<T>::printDFS() {
 	Node<T>* currentNode = *&this->root;
 	stack<Node<T>*> nodeStack;
@@ -121,8 +164,40 @@ void BasicTree<T>::printDFS() {
 	delete currentNode;
 }
 
+template <typename T>
 void BasicTree<T>::printBFS() {
+	Node<T>* currentNode;
+	queue<Node<T>*> nodeQueue;
+
+	/* case of an empty tree */
+	if (this->root == NULL) { return; }
+
+	/* case of just the root */
+	if (this->root->leftChild == NULL && this->root->rightChild == NULL) {
+		cout << this->root->data;
+		return;
+	}
+
+	nodeQueue.push(*&this->root);	// push the root to the queue first
+	while (!nodeQueue.empty()) {
+		currentNode = nodeQueue.front();
+		cout << currentNode->data << " ";
+		nodeQueue.pop();		
+
+		if (currentNode->leftChild != NULL) { nodeQueue.push(currentNode->leftChild); }	// queue the left child of current node
+		if (currentNode->rightChild != NULL) { nodeQueue.push(currentNode->rightChild); }	// queue the right child of current node
+	}
+}
+
+template <typename T>
+void BasicTree<T>::printNode_DFS(T data) {
 
 }
+
+template <typename T>
+void BasicTree<T>::printNode_BFS(T data) {
+
+}
+
 
 #endif
