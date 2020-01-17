@@ -8,6 +8,14 @@ int main()
 {
     cout << "Hello World!\n";
     BasicTree<int> tree;
+
+    tree.insert(50);
+    tree.deleteNode(50);
+    cout << "TREE: ";
+    tree.printDFS();
+    cout << "\n";
+
+
     /*
               10
             /    \
@@ -16,7 +24,7 @@ int main()
          5   7   11  13
     */
 
-
+    /*
     tree.insert(10);
     tree.insert(12);
     tree.insert(6);
@@ -35,6 +43,7 @@ int main()
     int nodeData = tree.getNodeData(12);
     if (nodeData == 0) cout << "couldn't find it!\n";
     cout << "node's data: " << nodeData << endl;
+    */
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

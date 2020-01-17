@@ -58,10 +58,12 @@ BasicTree<T>::BasicTree() {
 	this->height = 0;
 }
 
+/* -----------------------------------------------------------------UNIQUE----------------------------------------------------------------- */
+/* private function to return a newly created node */
 template <typename T>
 Node<T>* BasicTree<T>::getNewNode(T data) {
 	Node<T>* newNode = new Node<T>;	// allocate a new node
-	/* set the variable of the node*/
+	/* set the variables of the node*/
 	newNode->data = data;
 	newNode->leftChild = NULL;
 	newNode->rightChild = NULL;
@@ -70,6 +72,7 @@ Node<T>* BasicTree<T>::getNewNode(T data) {
 }
 
 /* -----------------------------------------------------------------INSERTIONS----------------------------------------------------------------- */
+/* inserts a node into the tree where the node with the smaller data is to the left and the bigger data being on the right*/
 template <typename T>
 void BasicTree<T>::insert(T data) {
 	if (this->root == NULL) {
@@ -105,13 +108,32 @@ template <typename T>
 bool BasicTree<T>::deleteNode(T data) {
 	Node<T>* currentNode = *&this->root;
 	Node<T>* parent;
-	Node<T>* temptNode;
+	Node<T>* tempNode;
 
 	/* case of just the root */
-	if (currentNode->leftChild == NULL && currentNode->rightChild) {
-		delete this->root;
+	if (currentNode->leftChild == NULL && currentNode->rightChild == NULL) {
+		this->root = NULL;
 		return true;
 	}
+
+	/* case of root having one child*/
+	if (this->root->leftChild != NULL || this->root->rightChild != NULL) {
+		if (this->root->leftChild == NULL) {	// case of no left child
+			currentNode = *&this->root->rightChild;
+			tempNode = *&this->root;
+			delete tempNode;
+			this->root = currentNode;
+			return true;
+		} else {	// case of no right child
+			currentNode = *&this->root->leftChild;
+			tempNode = *&this->root;
+			delete tempNode;
+			this->root = currentNode;
+			return true;
+		}
+	}
+
+	return false;
 
 	/* case of one child */
 
@@ -156,6 +178,7 @@ Node<T>* BasicTree<T>::getNode(T data) {
 }
 
 /* -----------------------------------------------------------------SERACHES----------------------------------------------------------------- */
+/* Searches through the tree and returns true if a node is found that the user wants, false if not */
 template <typename T>
 bool BasicTree<T>::isNodePresent(T data) {
 	Node<T> currentNode = this->root;
@@ -174,6 +197,7 @@ bool BasicTree<T>::isNodePresent(T data) {
 }
 
 /* -----------------------------------------------------------------PRINTERS----------------------------------------------------------------- */
+/* prints the tree in a Depth First Search fashion*/
 template <typename T>
 void BasicTree<T>::printDFS() {
 	Node<T>* currentNode = *&this->root;
@@ -187,6 +211,8 @@ void BasicTree<T>::printDFS() {
 		cout << this->root->data;
 		return;
 	}
+
+	/* case of root having just one child */
 
 	/* keep traveling left until we reach a null node, then pop from the stack and travel right (if possible) then travel left, repeat */
 	while (!nodeStack.empty() || currentNode != NULL) {
@@ -205,6 +231,7 @@ void BasicTree<T>::printDFS() {
 	delete currentNode;
 }
 
+/* prints the tree in a Breadth First Search fashion*/
 template <typename T>
 void BasicTree<T>::printBFS() {
 	Node<T>* currentNode;
