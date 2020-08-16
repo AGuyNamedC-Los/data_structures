@@ -4,16 +4,77 @@
 #include "BasicTree.h"
 using namespace std;
 
+void menuOptions() {
+     cout << "********************\n";
+     cout << "0 - add node to tree\n";
+     cout << "1 - delete node from tree\n";
+     cout << "2 - print BFS\n";
+     cout << "3 - print DFS\n";
+     cout << "9 - exit\n";
+     cout << "********************\n";
+}
+
+void basicTreeMenu() {
+     BasicTree<int> basicTree;
+     int choice = 0;
+     int num = 0;
+     char quit = 'q';
+
+     while (choice != 9) {
+          switch (choice) {
+          case 0:
+               cout << "number to add to tree: ";
+               cin >> num;
+               basicTree.insert(num);
+               menuOptions();
+               cout << "\nmenu choice: ";
+               cin >> choice;
+               break;
+          case 1:
+               cout << "delete node from tree: ";
+               cin >> num;
+               basicTree.deleteNode(num);
+               menuOptions();
+               cout << "\nmenu choice: ";
+               cin >> choice;
+               break;
+          case 2:
+               cout << "printing tree...\n";
+               basicTree.printBFS();
+               cout << endl;
+               menuOptions();
+               cout << "\nmenu choice: ";
+               cin >> choice;
+               break;
+          case 3:
+               cout << "printing tree...\n";
+               basicTree.printDFS();
+               menuOptions();
+               cout << "\nmenu choice: ";
+               cin >> choice;
+               break;
+          default:
+               cout << "invalid menu option!\n";
+               cout << "try again\n";
+               menuOptions();
+               cout << "\nmenu choice: ";
+               cin >> choice;
+               break;
+          }
+     }
+}
+
 int main()
 {
-    cout << "Hello World!\n";
-    BasicTree<int> tree;
+     basicTreeMenu();
+    //cout << "Hello World!\n";
+    //BasicTree<int> tree;
 
-    tree.insert(50);
-    tree.deleteNode(50);
-    cout << "TREE: ";
-    tree.printDFS();
-    cout << "\n";
+    //tree.insert(50);
+    //tree.deleteNode(50);
+    //cout << "TREE: ";
+    //tree.printDFS();
+    //cout << "\n";
 
 
     /*

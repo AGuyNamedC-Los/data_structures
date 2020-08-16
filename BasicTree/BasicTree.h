@@ -48,6 +48,9 @@ public:
 	void printDFS();
 	void printBFS();
 	void printNode(T data);
+
+	/* unique */
+	Node<T>* inOrderSuccessor(Node<T> *node);
 };
 
 /* -----------------------------------------------------------------CONSTRUCTOR----------------------------------------------------------------- */
@@ -107,37 +110,54 @@ void BasicTree<T>::insert(T data) {
 template <typename T>
 bool BasicTree<T>::deleteNode(T data) {
 	Node<T>* currentNode = *&this->root;
-	Node<T>* parent;
-	Node<T>* tempNode;
 
-	/* case of just the root */
+	// search for the node
+	while (currentNode != NULL && currentNode->data != data) {
+		if (data < currentNode->data) currentNode = currentNode->leftChild;
+		else currentNode = currentNode->rightChild;
+	}
+
+	if(currentNode == NULL) {
+		cout << "could not find: " << data << " in tree!\n";
+		return false;
+	}
+
+	// node has no children
 	if (currentNode->leftChild == NULL && currentNode->rightChild == NULL) {
-		this->root = NULL;
+		delete currentNode;
 		return true;
 	}
 
-	/* case of root having one child*/
-	if (this->root->leftChild != NULL || this->root->rightChild != NULL) {
-		if (this->root->leftChild == NULL) {	// case of no left child
-			currentNode = *&this->root->rightChild;
-			tempNode = *&this->root;
-			delete tempNode;
-			this->root = currentNode;
-			return true;
-		} else {	// case of no right child
-			currentNode = *&this->root->leftChild;
-			tempNode = *&this->root;
-			delete tempNode;
-			this->root = currentNode;
-			return true;
-		}
+	// node has one child
+	if (currentNode->leftChild == NULL || currentNode->rightChild == NULL) {
+		if (currentNode->leftChild == NULL)
+			currentNode = currentNode->rightChild;
+		else
+			currentNode = currentNode->leftChild;
 	}
 
-	return false;
+	// node has two children
+	// find node's in order successor and it's parent (if available)
+	Node<T>* temp = currentNode->rightChild;
+	Node<T>* parent = NULL;
+		
+	while (temp->leftChild != NULL) {
+		parent = temp;
+		temp = temp->leftChild;
+	}
 
-	/* case of one child */
+	// if no parent found (there is no left subtree for temp (the current node's right child))
+	if (parent == NULL) {
+		if (temp->rightChild == NULL) temp->rightChild = NULL;
+		currentNode->rightChild = temp->rightChild;
+	} else {
+		parent->leftChild = temp->rightChild;
+	}
 
-	/* case of two children*/
+	currentNode->data = temp->data;
+	delete temp;
+
+	return true;
 }
 
 /* -----------------------------------------------------------------GETTERS----------------------------------------------------------------- */
@@ -272,6 +292,14 @@ void BasicTree<T>::printNode(T data) {
 		}
 	}
 	cout << "could not find node with data: " << data;
+}
+
+template <typename T>
+Node<T>* BasicTree<T>::inOrderSuccessor(Node<T>* node) {
+	Node<T>* currentNode = node;
+	while (currentNode != NULL && currentNode->leftChild != NULL) { currentNode = currentNode->leftChild; }
+
+	return currentNode;
 }
 
 #endif
