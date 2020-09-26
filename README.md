@@ -1,3 +1,17 @@
 # Data Structures
 
-## This repository contains a repository of data structures that I have created for my own learning purposes
+repository of data structures using various languages
+
+# Motivation
+
+Practice for me to create data structures using different languages
+
+# Languages used
+
+- c++
+
+# Github Code Navigation
+
+- :file_folder: **BasicTree**: code for a binary tree
+- :file_folder: **DoublyLinkedList**: code for an interative doubly linked list
+
