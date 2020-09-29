@@ -40,3 +40,12 @@
 Debug
 x64
 .vs
+
+# CSharp stuff
+/bin/
+/obj/
+*.csproj
+*.json
+*.props
+*.targets
+*.cache
