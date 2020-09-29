@@ -73,12 +73,30 @@ namespace AVL_Tree {
 			if(data < prevNode.Data) {
 				prevNode.Left = new TreeNode(data, prevNode.NodeDepth + 1);
 				prevNode.Left.Parent = prevNode;
+				UpdateNodeHeights(prevNode.Left);
 			} else {
 				prevNode.Right = new TreeNode(data, prevNode.NodeDepth + 1);
 				prevNode.Right.Parent = prevNode;
+				UpdateNodeHeights(prevNode.Right);
 			}
 
 			if (treeHeight > TreeHeight) TreeHeight = treeHeight;
+		}
+
+		private void UpdateNodeHeights(TreeNode node) {
+			if (node == Root) return;
+
+			TreeNode currNode = node;
+			TreeNode parent = currNode.Parent;
+
+			while(parent != null) {
+				if(currNode.NodeHeight + 1 > parent.NodeHeight) {
+					parent.NodeHeight = currNode.NodeHeight + 1;
+				}
+
+				currNode = currNode.Parent;
+				parent = currNode.Parent;
+			}
 		}
 
 		private void PrintNode(TreeNode node) {
@@ -124,7 +142,7 @@ namespace AVL_Tree {
 					currTreeDepth = currNode.NodeDepth;
 					Console.WriteLine();
 				}
-				Console.Write(Indent(5 * (TreeHeight - currNode.NodeDepth)) + "[" + currNode.Data + "]");
+				Console.Write(Indent(10 * (TreeHeight - currNode.NodeDepth)) + "[" + currNode.NodeDepth + "][" +currNode.NodeHeight + "][" + currNode.Data + "]");
 			}
 		}
 	}
