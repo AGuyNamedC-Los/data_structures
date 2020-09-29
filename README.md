@@ -12,6 +12,7 @@ Practice for me to create data structures using different languages
 
 # Github Code Navigation
 
-- :file_folder: **BasicTree**: code for a binary tree
-- :file_folder: **DoublyLinkedList**: code for an interative doubly linked list
+- :file_folder: **BasicTree**: implementation of a binary tree in C++
+- :file_folder: **DoublyLinkedList**: implementation of a doubly linked list in C++
+- :file_folder: **AVL_Tree**: implementation of an AVL tree in C#
 
