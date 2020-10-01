@@ -13,16 +13,17 @@ namespace AVL_Tree {
 			Console.WriteLine("1 - print tree (DFS)");
 			Console.WriteLine("2 - tree height");
 			Console.WriteLine("3 - print pretty tree");
-			Console.WriteLine("4 - quit");
+			Console.WriteLine("4 - continually insert into tree");
+			Console.WriteLine("5 - quit");
 			Console.WriteLine();
 		}
 		
 		static void Menu() {
-			int choice = 0;
+			int choice = 4;
 			int num;
 			AVL_Tree avl = new AVL_Tree();
 
-			while(choice != 4) {
+			while(choice != 5) {
 				switch(choice) {
 					case 0:   // insert into tree
 						Console.Write("number to insert: ");
@@ -58,9 +59,29 @@ namespace AVL_Tree {
 						Console.Write("choice: ");
 						choice = Convert.ToInt32(Console.ReadLine());
 						break;
+					case 4:
+						bool running= true;
+						while (running) {
+							Console.WriteLine("[q] to quit");
+							Console.Write("number to insert: ");
+							string input = Console.ReadLine();
+							if (input.Equals("q")) {
+								running = false;
+							} else {
+								int number = Convert.ToInt32(input);
+								avl.Insert(number);
+								avl.Print2D();
+								Console.WriteLine();
+							}
+						}
+						Console.WriteLine();
+						MenuOptions();
+						Console.Write("choice: ");
+						choice = Convert.ToInt32(Console.ReadLine());
+						break;
 					default:	// invalid choice
 						MenuOptions();
-						Console.Write("Please select a valid option between 0-4: ");
+						Console.Write("Please select a valid option between 0-5: ");
 						choice = Convert.ToInt32(Console.ReadLine());
 						break;
 				}

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace AVL_Tree {
@@ -34,6 +35,7 @@ namespace AVL_Tree {
 
 		private TreeNode Root { get; set; }
 		public int TreeHeight { get; set; }
+		private int COUNT = 10;
 
 		// constructor for AVL_Tree
 		public AVL_Tree() {
@@ -41,66 +43,64 @@ namespace AVL_Tree {
 			TreeHeight = 0;
 		}
 
-		// creates a node for the tree
-		private TreeNode CreateTreeNode(int data) {
-			TreeNode newNode = new TreeNode(data);
-			return newNode;
-		}
-
-		// currently inserts in BST fashion
 		public void Insert(int data) {
-			if(Root == null) { 
-				Root = CreateTreeNode(data);
-				return;
+			if (Root == null) { 
+				Root = new TreeNode(data); 
+				return; 
 			}
 
-			TreeNode currNode = Root;
-			TreeNode prevNode = null;
-			int treeHeight = 0;
-
-			while(currNode != null) {
-				if(data < currNode.Data) {
-					prevNode = currNode;
-					currNode = currNode.Left;
-					treeHeight++;
-				} else {
-					prevNode = currNode;
-					currNode = currNode.Right;
-					treeHeight++;
-				}
-			}
-
-			if(data < prevNode.Data) {
-				prevNode.Left = new TreeNode(data, prevNode.NodeDepth + 1);
-				prevNode.Left.Parent = prevNode;
-				UpdateNodeHeights(prevNode.Left);
-			} else {
-				prevNode.Right = new TreeNode(data, prevNode.NodeDepth + 1);
-				prevNode.Right.Parent = prevNode;
-				UpdateNodeHeights(prevNode.Right);
-			}
-
-			if (treeHeight > TreeHeight) TreeHeight = treeHeight;
+			TreeNode newNode = new TreeNode(data);
+			Root = Insert(Root, newNode);
 		}
 
-		private void UpdateNodeHeights(TreeNode node) {
-			if (node == Root) return;
-
-			TreeNode currNode = node;
-			TreeNode parent = currNode.Parent;
-
-			while(parent != null) {
-				if(currNode.NodeHeight + 1 > parent.NodeHeight) {
-					parent.NodeHeight = currNode.NodeHeight + 1;
-				}
-
-				currNode = currNode.Parent;
-				parent = currNode.Parent;
+		private TreeNode Insert(TreeNode currentNode, TreeNode newNode) {
+			if (currentNode == null) {
+				currentNode = newNode;
+				return currentNode;
 			}
+
+			if (newNode.Data < currentNode.Data) { currentNode.Left = Insert(currentNode.Left, newNode); }
+			else { currentNode.Right = Insert(currentNode.Right, newNode); }
+
+			UpdateNode(currentNode);
+			Balance(currentNode);
+			return currentNode;
 		}
 
-		private void PrintNode(TreeNode node) {
-			Console.Write("[" + node.Data + "]");
+		// will travel upwards from a given node and properly update heights and balance factor of each node visited
+		private void UpdateNode(TreeNode node) {
+			int leftNodeHeight = (node.Left == null) ? -1 : node.Left.NodeHeight;
+			int rightNodeHeight = (node.Right == null) ? -1 : node.Right.NodeHeight;
+
+			node.NodeHeight = 1 + Math.Max(leftNodeHeight, rightNodeHeight);
+			node.BF = rightNodeHeight - leftNodeHeight;
+		}
+
+		private void Balance(TreeNode currNode) {
+			// left heavy sub-tree
+			if (currNode.BF <= -2) {
+				if (currNode.Left.BF <= 0) {
+					Console.Write("left left case: ");
+					Console.Write("BF:[" + currNode.BF + "][" + currNode.Data + "]" + "\n");
+					RightRotation(currNode);
+				}
+				else {
+					Console.Write("left right case: ");
+					Console.Write("BF:[" + currNode.BF + "][" + currNode.Data + "]" + "\n");
+				}
+				// right heavy sub-tree
+			}
+			else if (currNode.BF >= 2) {
+				if (currNode.Right.BF >= 0) {
+					Console.Write("right right case: ");
+					Console.Write("BF:[" + currNode.BF + "][" + currNode.Data + "]" + "\n");
+
+				}
+				else {
+					Console.Write("right left case: ");
+					Console.Write("BF:[" + currNode.BF + "][" + currNode.Data + "]" + "\n");
+				}
+			}
 		}
 
 		// for public interface
@@ -117,7 +117,7 @@ namespace AVL_Tree {
 			}
 		}
 
-		private String Indent(int paddingSize) {
+		private string Indent(int paddingSize) {
 			return "".PadRight(paddingSize);
 		}
 
@@ -142,8 +142,47 @@ namespace AVL_Tree {
 					currTreeDepth = currNode.NodeDepth;
 					Console.WriteLine();
 				}
-				Console.Write(Indent(10 * (TreeHeight - currNode.NodeDepth)) + "[" + currNode.NodeDepth + "][" +currNode.NodeHeight + "][" + currNode.Data + "]");
+				Console.Write(Indent(15 * (TreeHeight - currNode.NodeDepth)) + "D:[" + currNode.NodeDepth + "] H:[" +currNode.NodeHeight + "] BF:[" + currNode.BF + "] N:[" + currNode.Data + "]");
 			}
+		}
+
+		public void Print2D() {
+			Print2D(Root, 0);
+		}
+
+		private void Print2D(TreeNode root, int space) {
+			// Base case  
+			if (root == null) { return; }
+
+			// Increase distance between levels  
+			space += COUNT;
+
+			// Process right child first  
+			Print2D(root.Right, space);
+
+			// Print current node after space count  
+			Console.Write("\n");
+			for (int i = COUNT; i < space; i++) { Console.Write(" "); }
+			Console.Write("BF:[" + root.BF + "][" + root.Data + "]" + "\n");
+
+			// Process left child  
+			Print2D(root.Left, space);
+		}
+
+		private void LeftRotation(TreeNode node_A) {
+
+		}
+
+		private void RightRotation(TreeNode node_A) {
+
+		}
+
+		private void LeftLeftCase(TreeNode node) {
+			RightRotation(node);
+		}
+
+		private void RightRightCase(TreeNode node) {
+			LeftRotation(node);
 		}
 	}
 }
