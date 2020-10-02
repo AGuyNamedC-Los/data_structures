@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using System.Xml;
 
 namespace AVL_Tree {
 	class AVL_Tree {
@@ -63,8 +64,7 @@ namespace AVL_Tree {
 			else { currentNode.Right = Insert(currentNode.Right, newNode); }
 
 			UpdateNode(currentNode);
-			Balance(currentNode);
-			return currentNode;
+			return Balance(currentNode);
 		}
 
 		// will travel upwards from a given node and properly update heights and balance factor of each node visited
@@ -76,34 +76,61 @@ namespace AVL_Tree {
 			node.BF = rightNodeHeight - leftNodeHeight;
 		}
 
-		private void Balance(TreeNode currNode) {
+		// will rotate the nodes accordingly to adhear to AVL tree balancing
+		private TreeNode Balance(TreeNode currNode) {
 			// left heavy sub-tree
 			if (currNode.BF <= -2) {
-				if (currNode.Left.BF <= 0) {
-					Console.Write("left left case: ");
-					Console.Write("BF:[" + currNode.BF + "][" + currNode.Data + "]" + "\n");
-					RightRotation(currNode);
-				}
-				else {
-					Console.Write("left right case: ");
-					Console.Write("BF:[" + currNode.BF + "][" + currNode.Data + "]" + "\n");
-				}
-				// right heavy sub-tree
+				if (currNode.Left.BF <= 0) { return LeftLeftCase(currNode); }
+				else { return LeftRightCase(currNode); }
+			// right heavy sub-tree
+			} else if (currNode.BF >= 2) {
+				if (currNode.Right.BF >= 0) { return RightRightCase(currNode); }
+				else {return RightLeftCase(currNode); }
 			}
-			else if (currNode.BF >= 2) {
-				if (currNode.Right.BF >= 0) {
-					Console.Write("right right case: ");
-					Console.Write("BF:[" + currNode.BF + "][" + currNode.Data + "]" + "\n");
 
-				}
-				else {
-					Console.Write("right left case: ");
-					Console.Write("BF:[" + currNode.BF + "][" + currNode.Data + "]" + "\n");
-				}
-			}
+			return currNode;
 		}
 
-		// for public interface
+		// takes a given node and rotates it left
+		private TreeNode LeftRotation(TreeNode node) {
+			TreeNode newParent = node.Right;
+			node.Right = newParent.Left;
+			newParent.Left = node;
+
+			UpdateNode(node);
+			UpdateNode(newParent);
+			return newParent;
+		}
+
+		// takes a given node and rotates it right
+		private TreeNode RightRotation(TreeNode node) {
+			TreeNode newParent = node.Left;
+			node.Left = newParent.Right;
+			newParent.Right = node;
+
+			UpdateNode(node);
+			UpdateNode(newParent);
+			return newParent;
+		}
+
+		private TreeNode LeftLeftCase(TreeNode node) {
+			return RightRotation(node);
+		}
+
+		private TreeNode LeftRightCase(TreeNode node) {
+			node.Left = LeftRotation(node.Left);	// this will turn it into a left left case
+			return LeftLeftCase(node);
+		}
+
+		private TreeNode RightRightCase(TreeNode node) {
+			return LeftRotation(node);
+		}
+
+		private TreeNode RightLeftCase(TreeNode node) {
+			node.Right = RightRotation(node.Right);	// this will turn it into a right right case
+			return RightRightCase(node);
+		}
+
 		public void PrintTree() {
 			PrintTree(Root);
 		}
@@ -167,22 +194,6 @@ namespace AVL_Tree {
 
 			// Process left child  
 			Print2D(root.Left, space);
-		}
-
-		private void LeftRotation(TreeNode node_A) {
-
-		}
-
-		private void RightRotation(TreeNode node_A) {
-
-		}
-
-		private void LeftLeftCase(TreeNode node) {
-			RightRotation(node);
-		}
-
-		private void RightRightCase(TreeNode node) {
-			LeftRotation(node);
 		}
 	}
 }
