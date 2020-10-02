@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Xml;
 
@@ -129,6 +130,72 @@ namespace AVL_Tree {
 		private TreeNode RightLeftCase(TreeNode node) {
 			node.Right = RightRotation(node.Right);	// this will turn it into a right right case
 			return RightRightCase(node);
+		}
+
+		public void Remove(int data) {
+			if (Root == null) { return; }
+			Root = Remove(Root, data);
+		}
+
+		private TreeNode Remove(TreeNode node, int data) { 
+			if(node == null) { return null; }
+
+			if (data < node.Data) {
+				node.Left = Remove(node.Left, data);
+			} else if (data > node.Data) {
+				node.Right = Remove(node.Right, data);
+			// node found, check which one of the four removal situations is usable
+			} else { 
+				// node has no left sub tree so just replace this node with it's right child
+				if (node.Left == null) {
+					return node.Right;
+				// node has no left sub tree so just replace this node with it's right child
+				} else if (node.Right == null) {
+					return node.Left;
+				// node has both a left and right subtree
+				// remove the child (either left or right) that has the greatest height between both node's children
+				} else {
+					// remove the highest value from the left subtree 
+					// (one move to the left then travel as far down right as possible to find greatest value in the left sub tree)
+					if (node.Left.NodeHeight > node.Right.NodeHeight) {
+						int successorVal = GetHighestValue(node.Left);
+
+					// remove the highest value from the left subtree 
+					// (one move to the left then travel as far down right as possible to find greatest value in the left sub tree)
+					} else {
+						int succesorVal = GetLowestValue(node.Right);
+					}
+					
+				}
+			}
+
+			return node;
+		}
+
+		public int GetLowestvalue() {
+			return GetLowestValue(Root);
+		}
+
+		private int GetLowestValue(TreeNode node) {
+			while (node != null) {
+				node = node.Left;
+			}
+			return node.Data;
+		}
+
+		public int GetHighestValue() {
+			return GetHighestValue(Root);
+		}
+
+		private int GetHighestValue(TreeNode node) {
+			while (node != null) {
+				node = node.Right;
+			}
+			return node.Data;
+		}
+
+		public void DeleteTree() {
+			Root = null;
 		}
 
 		public void PrintTree() {
