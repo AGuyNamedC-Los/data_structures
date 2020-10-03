@@ -10,8 +10,7 @@ namespace AVL_Tree {
 		// class that creates a tree node
 		class TreeNode
 		{
-			public int Data { get; set; }	// data each node will hold
-			public TreeNode Parent { get; set; }
+			public int Data { get; set; }
 			public TreeNode Left { get; set; }
 			public TreeNode Right { get; set; }
 			public int BF { get; set; }   // balance factor BF(node) = Height(right subtree) - Height(left subtree)
@@ -26,18 +25,11 @@ namespace AVL_Tree {
 				NodeDepth = 0;
 				NodeHeight = 0;
 			}
-
-			public TreeNode(int _data, int _nodeDepth) {
-				Data = _data;
-				BF = 0;
-				NodeDepth = _nodeDepth;
-				NodeHeight = 0;
-			}
 		}
 
 		private TreeNode Root { get; set; }
 		public int TreeHeight { get; set; }
-		private int COUNT = 10;
+		private readonly int COUNT = 10;
 
 		// constructor for AVL_Tree
 		public AVL_Tree() {
@@ -45,30 +37,43 @@ namespace AVL_Tree {
 			TreeHeight = 0;
 		}
 
-		public void Insert(int data) {
+		// ensures no duplicate values are inserted before inserting recursively into the tree
+		public bool Insert(int data) {
 			if (Root == null) { 
 				Root = new TreeNode(data); 
-				return; 
+				return true; 
 			}
 
-			TreeNode newNode = new TreeNode(data);
-			Root = Insert(Root, newNode);
+			bool duplicateVal = findNode(Root, data);
+
+			// ensure no duplicate values are accepted
+			if (!duplicateVal) {
+				TreeNode newNode = new TreeNode(data);
+				Root = Insert(Root, newNode);
+				return true;
+			}
+
+			return false;
 		}
 
+		// insert into the tree recursively
 		private TreeNode Insert(TreeNode currentNode, TreeNode newNode) {
 			if (currentNode == null) {
 				currentNode = newNode;
 				return currentNode;
 			}
 
-			if (newNode.Data < currentNode.Data) { currentNode.Left = Insert(currentNode.Left, newNode); }
-			else { currentNode.Right = Insert(currentNode.Right, newNode); }
+			if (newNode.Data < currentNode.Data) { 
+				currentNode.Left = Insert(currentNode.Left, newNode); 
+			} else { 
+				currentNode.Right = Insert(currentNode.Right, newNode); 
+			}
 
 			UpdateNode(currentNode);
 			return Balance(currentNode);
 		}
 
-		// will travel upwards from a given node and properly update heights and balance factor of each node visited
+		// updates a node's height value
 		private void UpdateNode(TreeNode node) {
 			int leftNodeHeight = (node.Left == null) ? -1 : node.Left.NodeHeight;
 			int rightNodeHeight = (node.Right == null) ? -1 : node.Right.NodeHeight;
@@ -81,18 +86,24 @@ namespace AVL_Tree {
 		private TreeNode Balance(TreeNode currNode) {
 			// left heavy sub-tree
 			if (currNode.BF <= -2) {
-				if (currNode.Left.BF <= 0) { return LeftLeftCase(currNode); }
-				else { return LeftRightCase(currNode); }
+				if (currNode.Left.BF <= 0) { 
+					return LeftLeftCase(currNode); 
+				} else { 
+					return LeftRightCase(currNode);
+				}
 			// right heavy sub-tree
 			} else if (currNode.BF >= 2) {
-				if (currNode.Right.BF >= 0) { return RightRightCase(currNode); }
-				else {return RightLeftCase(currNode); }
+				if (currNode.Right.BF >= 0) { 
+					return RightRightCase(currNode); 
+				} else {
+					return RightLeftCase(currNode); 
+				}
 			}
 
 			return currNode;
 		}
 
-		// takes a given node and rotates it left
+		// rotates nodes to the left from a given node
 		private TreeNode LeftRotation(TreeNode node) {
 			TreeNode newParent = node.Right;
 			node.Right = newParent.Left;
@@ -103,7 +114,7 @@ namespace AVL_Tree {
 			return newParent;
 		}
 
-		// takes a given node and rotates it right
+		// rotates nodes to the right from a given node
 		private TreeNode RightRotation(TreeNode node) {
 			TreeNode newParent = node.Left;
 			node.Left = newParent.Right;
@@ -161,9 +172,18 @@ namespace AVL_Tree {
 			return RightRightCase(node);
 		}
 
-		public void Remove(int data) {
-			if (Root == null) { return; }
-			Root = Remove(Root, data);
+		public bool Remove(int data) {
+			if (Root == null) { return false; }
+
+			bool nodeExists = findNode(Root, data);
+
+			// ensure no duplicate values are accepted
+			if (nodeExists) {
+				Root = Remove(Root, data);
+				return true;
+			}
+
+			return false;
 		}
 
 		private TreeNode Remove(TreeNode node, int data) { 
@@ -233,6 +253,24 @@ namespace AVL_Tree {
 		private int GetHighestValue(TreeNode node) {
 			while (node != null) { node = node.Right; }
 			return node.Data;
+		}
+
+		public bool findNode(int data) {
+			return findNode(Root, data);
+		}
+
+		private bool findNode(TreeNode node, int data) {
+			while (node != null) {
+				if (data < node.Data) {
+					node = node.Left;
+				} else if (data > node.Data) {
+					node = node.Right;
+				} else {
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		public void DeleteTree() {
