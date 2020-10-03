@@ -114,19 +114,48 @@ namespace AVL_Tree {
 			return newParent;
 		}
 
+		/*
+		       A
+		      /
+		     B	=>   B
+		    /         / \
+		   C         C   A
+		*/
+
 		private TreeNode LeftLeftCase(TreeNode node) {
 			return RightRotation(node);
 		}
 
+		/* 
+		  	A		  A
+		    /	      /
+		   B		=>   C	=>   C
+		    \         /         / \
+		     C	   B         B   A
+		*/
 		private TreeNode LeftRightCase(TreeNode node) {
 			node.Left = LeftRotation(node.Left);	// this will turn it into a left left case
 			return LeftLeftCase(node);
 		}
 
+		/* 
+		   A
+		    \
+		     B	 =>   B
+		      \		/ \
+		       C      A   C
+		*/
 		private TreeNode RightRightCase(TreeNode node) {
 			return LeftRotation(node);
 		}
 
+		/*   
+		   A         A
+		    \         \
+		     B	=>   C	=>   C
+		    /           \       / \
+		   C             B     A   B
+		*/
 		private TreeNode RightLeftCase(TreeNode node) {
 			node.Right = RightRotation(node.Right);	// this will turn it into a right right case
 			return RightRightCase(node);
@@ -149,21 +178,35 @@ namespace AVL_Tree {
 				// node has no left sub tree so just replace this node with it's right child
 				if (node.Left == null) {
 					return node.Right;
+
 				// node has no left sub tree so just replace this node with it's right child
 				} else if (node.Right == null) {
 					return node.Left;
+
 				// node has both a left and right subtree
-				// remove the child (either left or right) that has the greatest height between both node's children
+				// remove the child that has the greatest height between both node's children
 				} else {
 					// remove the highest value from the left subtree 
-					// (one move to the left then travel as far down right as possible to find greatest value in the left sub tree)
 					if (node.Left.NodeHeight > node.Right.NodeHeight) {
 						int successorVal = GetHighestValue(node.Left);
+						node.Data = successorVal;
 
-					// remove the highest value from the left subtree 
-					// (one move to the left then travel as far down right as possible to find greatest value in the left sub tree)
+
+						// now we must delete the succesor node we found from using GetHighestValue by calling the Remove function once again...
+						// we are guarenteed to either use the case of this node having one left child or no children
+						// which is handled by one of the if satements above
+						node.Left = Remove(node.Left, successorVal);
+
+					// remove the lowest value from the right subtree 
 					} else {
-						int succesorVal = GetLowestValue(node.Right);
+						int succesorVal = GetLowestValue(node.Right);	 // get lowest value from the right subtree
+						node.Data = succesorVal; // replace the current node's value with the lowest value from the right sub tree
+
+
+						// now we must delete the succesor node we found from using GetLowestValue by calling the Remove function once again...
+						// we are guarenteed to either use the case of this node having one right child or no children
+						// which is handled by one of the if satements above
+						node.Right = Remove(node.Right, succesorVal);
 					}
 					
 				}
@@ -176,10 +219,9 @@ namespace AVL_Tree {
 			return GetLowestValue(Root);
 		}
 
+		// travel as far down left as possible to find lowest value in the tree
 		private int GetLowestValue(TreeNode node) {
-			while (node != null) {
-				node = node.Left;
-			}
+			while (node != null) { node = node.Left; }
 			return node.Data;
 		}
 
@@ -187,10 +229,9 @@ namespace AVL_Tree {
 			return GetHighestValue(Root);
 		}
 
+		// travel as far down right as possible to find greatest value in the tree
 		private int GetHighestValue(TreeNode node) {
-			while (node != null) {
-				node = node.Right;
-			}
+			while (node != null) { node = node.Right; }
 			return node.Data;
 		}
 
@@ -257,7 +298,7 @@ namespace AVL_Tree {
 			// Print current node after space count  
 			Console.Write("\n");
 			for (int i = COUNT; i < space; i++) { Console.Write(" "); }
-			Console.Write("BF:[" + root.BF + "][" + root.Data + "]" + "\n");
+			Console.Write("[" + root.Data + "]" + "\n");
 
 			// Process left child  
 			Print2D(root.Left, space);

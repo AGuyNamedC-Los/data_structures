@@ -19,7 +19,9 @@ namespace AVL_Tree {
 		}
 		
 		static void Menu() {
-			int choice = 4;
+			MenuOptions();
+			Console.Write("choice: ");
+			int choice = Convert.ToInt32(Console.ReadLine());
 			int num;
 			AVL_Tree avl = new AVL_Tree();
 
