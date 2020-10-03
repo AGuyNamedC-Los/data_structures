@@ -28,7 +28,8 @@ namespace AVL_Tree {
 
 			while(choice != 5) {
 				switch(choice) {
-					case 0:   // insert into tree
+					// insert into tree
+					case 0:   
 						Console.Write("number to insert: ");
 						num = Convert.ToInt32(Console.ReadLine());
 						inserted = avl.Insert(num);
@@ -37,12 +38,14 @@ namespace AVL_Tree {
 						} else {
 							Console.WriteLine(num + " was not inserted (already in the tree)\n");
 						}
-						
+
+						avl.Print2D();
 						MenuOptions();
 						Console.Write("choice: ");
 						choice = Convert.ToInt32(Console.ReadLine());
 						break;
-					case 1:	// continually insert into the tree
+					// continually insert into the tree
+					case 1:	
 						bool running = true;
 						while (running)
 						{
@@ -60,17 +63,19 @@ namespace AVL_Tree {
 								} else {
 									Console.WriteLine(number + " was not inserted (already in the tree)\n");
 								}
+
 								avl.Print2D();
 								Console.WriteLine();
 							}
 						}
+
 						Console.WriteLine();
 						MenuOptions();
 						Console.Write("choice: ");
 						choice = Convert.ToInt32(Console.ReadLine());
 						break;
-
-					case 2:   // delete an item from the tree
+					// delete an item from the tree
+					case 2:   
 						Console.Write("number to remove: ");
 						num = Convert.ToInt32(Console.ReadLine());
 
@@ -81,8 +86,8 @@ namespace AVL_Tree {
 						else {
 							Console.WriteLine(num + " was not removed\n");
 						}
-						avl.Print2D();
 
+						avl.Print2D();
 						Console.WriteLine();
 						MenuOptions();
 						Console.Write("choice: ");
@@ -95,8 +100,8 @@ namespace AVL_Tree {
 						Console.Write("choice: ");
 						choice = Convert.ToInt32(Console.ReadLine());
 						break;
+					// print tree DFS
 					case 4:
-						// print tree DFS
 						Console.WriteLine("printing tree...");
 						avl.PrintTree();
 						Console.WriteLine();
@@ -104,13 +109,13 @@ namespace AVL_Tree {
 						Console.Write("choice: ");
 						choice = Convert.ToInt32(Console.ReadLine());
 						break;
-					default:	// invalid choice
+					// invalid choice
+					default:
 						MenuOptions();
 						Console.Write("Please select a valid option between 0-5: ");
 						choice = Convert.ToInt32(Console.ReadLine());
 						break;
 				}
-
 			}
 		}
 	}
